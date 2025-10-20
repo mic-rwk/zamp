@@ -5,12 +5,12 @@
 
 int main()
 {
-  void *pLibHnd_Set = dlopen("libInterp4Set.so",RTLD_LAZY);
+  void *pLibHnd_Set = dlopen("libInterp4Pause.so",RTLD_LAZY);
   AbstractInterp4Command *(*pCreateCmd_Set)(void);
   void *pFun;
 
   if (!pLibHnd_Set) {
-    std::cerr << "!!! Brak biblioteki: Interp4Set.so" << '\n';
+    std::cerr << "!!! Brak biblioteki: Interp4Pause.so" << '\n';
     return 1;
   }
 
