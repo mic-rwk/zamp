@@ -16,7 +16,7 @@ void Interp4Pause::PrintCmd() const {
 }
 
 void Interp4Pause::PrintSyntax() const {
-    std::cout << "Pause stop_time_ms\n";
+    std::cout << "\tPause stop_time[ms]\n";
 }
 
 void Interp4Pause::PrintParams() const {
@@ -24,17 +24,15 @@ void Interp4Pause::PrintParams() const {
 }
 
 const char* Interp4Pause::GetCmdName() const {
-    return "Pause";
+    return ::GetCmdName();
 }
 
 bool Interp4Pause::ExecCmd(AbstractScene &/*rScn*/, const char */*sMobObjName*/, AbstractComChannel &/*rComChann*/) {
-    // W etapie 1 nie wykonujemy wysyłania do serwera — tylko symulacja
     std::cout << "[Pause] ExecCmd na " << time_ms << " ms\n";
     return true;
 }
 
 bool Interp4Pause::ReadParams(std::istream &rStrm_CmdsList) {
-    // oczekujemy: czas_ms
     if (!(rStrm_CmdsList >> time_ms)) return false;
     return true;
 }

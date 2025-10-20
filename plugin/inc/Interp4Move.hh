@@ -21,12 +21,10 @@
  *  Klasa modeluj47e ...
  */
 class Interp4Move: public AbstractInterp4Command {
-  /*
-   *  Tu należy zdefiniować pola, które są niezbędne
-   *  do przechowywania wartości parametrów danego polecenia.
-   *  Ponieżej zdefiniowane jest tylko jedno pole jako przykład.
-   */
+
+  std::string objName;
   double  _Speed_mmS;
+  double distance_mm;
  public:
   /*!
    * \brief
@@ -43,7 +41,7 @@ class Interp4Move: public AbstractInterp4Command {
   /*!
    * \brief Wyświetla wartości wczytanych parametrów
    */
-  virtual void PrintParams() const override {} 
+  virtual void PrintParams() const override;
 
   /*!
    * \brief Wyświetla nazwę polecenia

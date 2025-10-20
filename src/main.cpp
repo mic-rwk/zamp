@@ -60,8 +60,7 @@ int runPreprocessor(int argc, char *argv[]){
     }
 }
 
-int main(int argc, char *argv[])
-{
+void LoadPlugin(){
   std::vector<std::string> pluginNames = {
           "./libs/libInterp4Set.so",
           "./libs/libInterp4Rotate.so",
@@ -91,6 +90,11 @@ int main(int argc, char *argv[])
           std::cout << "\n";
           delete cmd;
       }
+}
 
-    return 0;
+int main(int argc, char *argv[])
+{
+  LoadPlugin();
+
+  return 0;
 }

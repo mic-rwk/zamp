@@ -16,7 +16,7 @@ void Interp4Set::PrintCmd() const {
 }
 
 void Interp4Set::PrintSyntax() const {
-    std::cout << "Set nazwa_obiektu wsp_x wsp_y wsp_z kat_OX kat_OY kat_OZ\n";
+    std::cout << "\tSet nazwa_obiektu wsp_x wsp_y wsp_z kat_OX kat_OY kat_OZ\n";
 }
 
 void Interp4Set::PrintParams() const {
@@ -26,17 +26,15 @@ void Interp4Set::PrintParams() const {
 }
 
 const char* Interp4Set::GetCmdName() const {
-    return "Set";
+    return ::GetCmdName();
 }
 
 bool Interp4Set::ExecCmd(AbstractScene &/*rScn*/, const char */*sMobObjName*/, AbstractComChannel &/*rComChann*/) {
-    // W etapie 1 nie wykonujemy wysyłania do serwera — tylko symulacja
     std::cout << "[Set] ExecCmd (symulacja) dla obiektu " << objName << "\n";
     return true;
 }
 
 bool Interp4Set::ReadParams(std::istream &rStrm_CmdsList) {
-    // oczekujemy: nazwa x y z angX angY angZ
     if (!(rStrm_CmdsList >> objName)) return false;
     if (!(rStrm_CmdsList >> x >> y >> z >> angX >> angY >> angZ)) {
         return false;

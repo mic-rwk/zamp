@@ -16,7 +16,7 @@ void Interp4Rotate::PrintCmd() const {
 }
 
 void Interp4Rotate::PrintSyntax() const {
-    std::cout << "Rotate nazwa_obiektu nazwa_osi szybkosc_katowa kąt\n";
+    std::cout << "\tRotate nazwa_obiektu nazwa_osi szybkosc_katowa[rd/s] kąt[stopnie]\n";
 }
 
 void Interp4Rotate::PrintParams() const {
@@ -27,7 +27,7 @@ void Interp4Rotate::PrintParams() const {
 }
 
 const char* Interp4Rotate::GetCmdName() const {
-    return "Rotate";
+    return ::GetCmdName();
 }
 
 bool Interp4Rotate::ExecCmd(AbstractScene &/*rScn*/, const char */*sMobObjName*/, AbstractComChannel &/*rComChann*/) {
