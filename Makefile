@@ -22,8 +22,8 @@ LDFLAGS=-Wall
 
 
 
-interp: obj/main.o obj/preprocessor.o
-	g++ ${LDFLAGS} -o interp  obj/main.o obj/preprocessor.o -ldl
+interp: obj/main.o obj/preprocessor.o obj/LibInterface.o
+	g++ ${LDFLAGS} -o interp  obj/main.o obj/preprocessor.o obj/LibInterface.o -ldl
 
 obj/main.o: src/main.cpp inc/AbstractInterp4Command.hh inc/AbstractScene.hh\
             inc/AbstractComChannel.hh inc/preprocessor.hh
@@ -31,6 +31,9 @@ obj/main.o: src/main.cpp inc/AbstractInterp4Command.hh inc/AbstractScene.hh\
 
 obj/preprocessor.o: src/preprocessor.cpp inc/preprocessor.hh
 	g++ -c ${CPPFLAGS} -o obj/preprocessor.o src/preprocessor.cpp
+
+obj/LibInterface.o: src/LibInterface.cpp inc/LibInterface.hh
+	g++ -c ${CPPFLAGS} -o obj/LibInterface.o src/LibInterface.cpp
 
 doc:
 	cd dox; make
