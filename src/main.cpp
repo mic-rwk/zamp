@@ -1,12 +1,16 @@
-#include <iostream>
-#include <dlfcn.h>
 #include <cassert>
-#include <memory>
-#include <vector>
+#include <dlfcn.h>
 #include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <sstream>
+#include <vector>
+
 #include "AbstractInterp4Command.hh"
 #include "../inc/preprocessor.hh"
 #include "../inc/LibInterface.hh"
+#include "../inc/CommandsParser.hh"
 
 int displayLibraryInfo(){
 
@@ -94,7 +98,34 @@ void LoadPlugin(){
 
 int main(int argc, char *argv[])
 {
-  LoadPlugin();
+
+  try {
+        std::string preprocessed = RunPreprocessor("komendy.cmd");
+        std::istringstream input(preprocessed);
+
+        CommandsParser parser;
+        if (!parser.ReadCommandsList(input)) {
+            std::cerr << "Błąd podczas przetwarzania komend.\n";
+            return 1;
+        }
+
+  for (const auto &cmd : parser.GetCommands()) {
+        std::string libName = "libInterp4" + cmd.name + ".so";
+        LibInterface lib(libName);
+
+        if (!lib.LoadPlugin()) {
+            std::cerr << "Nie udało się załadować " << libName << "\n";
+            continue;
+        }
+
+        std::istringstream paramStream(cmd.params);
+        std::cout << "Uruchamianie komendy: " << cmd.name << " " << cmd.params << "\n";
+    }
+  }
+  catch(const std::exception &e){
+    std::cerr << e.what() << "\n";
+    return 1;
+  }
 
   return 0;
 }
