@@ -12,6 +12,8 @@
 #include "../inc/LibInterface.hh"
 #include "../inc/CommandsParser.hh"
 #include "../inc/ProgramInterpreter.hh"
+#include "../inc/Configuration.hh"
+#include "../inc/xmlinterp.hh"
 
 int displayLibraryInfo(){
 
@@ -97,10 +99,32 @@ void LoadPlugin(){
       }
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
-  ProgramInterpreter prog;
-  prog.ExecProgram(argv[1]);
+    const char *xmlFile = "config/config.xml";
+    if (argc > 1) {
+        xmlFile = argv[1];
+    }
 
-  return 0;
+    std::cout << "[MAIN] Uruchamianie programu z pliku: " << xmlFile << "\n";
+
+    Configuration config;
+
+    XMLInterp4Config xmlInterp(config);
+
+    ProgramInterpreter program(config);  
+
+    if (!program.Read_XML_Config(xmlFile)) {
+        std::cerr << "[MAIN] Błąd podczas wczytywania konfiguracji XML.\n";
+        return 1;
+    }
+
+    if (!program.ExecProgram(xmlFile)) {
+        std::cerr << "[MAIN] Błąd podczas wykonywania programu.\n";
+        return 2;
+    }
+
+    std::cout << "\n[MAIN] Program zakończył się poprawnie\n";
+    return 0;
 }
+

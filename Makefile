@@ -1,5 +1,5 @@
 __start__: obj __lines_for_space__ interp __plugin__
-	export LD_LIBRARY_PATH="./libs"; ./interp komendy.cmd
+	export LD_LIBRARY_PATH="./libs"; ./interp
 
 obj:
 	mkdir obj
@@ -23,14 +23,16 @@ LDFLAGS=-Wall
 
 
 interp: obj/main.o obj/preprocessor.o obj/LibInterface.o obj/CommandsParser.o obj/Scene.o obj/Set4LibInterfaces.o\
-obj/ComChannel.o obj/ProgramInterpreter.o
+obj/ComChannel.o obj/ProgramInterpreter.o obj/xmlinterp.o obj/Configuration.o
 	g++ ${LDFLAGS} -g -o interp  obj/main.o obj/preprocessor.o obj/LibInterface.o obj/CommandsParser.o obj/Scene.o\
-	 obj/Set4LibInterfaces.o obj/ComChannel.o obj/ProgramInterpreter.o -ldl
+	 obj/Set4LibInterfaces.o obj/ComChannel.o obj/ProgramInterpreter.o obj/xmlinterp.o\
+	 obj/Configuration.o -lxerces-c -ldl
 
 obj/main.o: src/main.cpp inc/AbstractInterp4Command.hh inc/AbstractScene.hh\
             inc/AbstractComChannel.hh inc/preprocessor.hh inc/LibInterface.hh\
 			inc/CommandsParser.hh inc/Scene.hh inc/Set4LibInterfaces.hh\
-			inc/ComChannel.hh inc/ProgramInterpreter.hh
+			inc/ComChannel.hh inc/ProgramInterpreter.hh\
+			inc/xmlinterp.hh inc/Configuration.hh
 	g++ -c ${CPPFLAGS} -o obj/main.o src/main.cpp
 
 obj/preprocessor.o: src/preprocessor.cpp inc/preprocessor.hh
@@ -53,6 +55,12 @@ obj/ComChannel.o: src/ComChannel.cpp inc/ComChannel.hh
 
 obj/ProgramInterpreter.o: src/ProgramInterpreter.cpp inc/ProgramInterpreter.hh
 	g++ -c ${CPPFLAGS} -o obj/ProgramInterpreter.o src/ProgramInterpreter.cpp
+
+obj/xmlinterp.o: src/xmlinterp.cpp inc/xmlinterp.hh
+	g++ -c ${CPPFLAGS} -o obj/xmlinterp.o src/xmlinterp.cpp
+
+obj/Configuration.o: src/Configuration.cpp inc/Configuration.hh
+	g++ -c ${CPPFLAGS} -o obj/Configuration.o src/Configuration.cpp
 
 doc:
 	cd dox; make
