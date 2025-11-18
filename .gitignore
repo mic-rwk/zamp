@@ -4,3 +4,5 @@ plugin/obj/
 czytaj.to
 interp
 .vscode/
+klient/
+serwer-z-tlem-Qt6/
