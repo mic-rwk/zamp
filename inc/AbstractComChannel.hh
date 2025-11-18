@@ -11,6 +11,7 @@
 
 
 #include <mutex>
+#include <string>
 
    /*!
     * \brief Definiuje interfejs kanału komunikacyjnego z serwerem graficznym.
@@ -54,6 +55,8 @@
         *  bezpieczniejszego zamknięcia.
         */
        virtual std::mutex &UseGuard() {}
+
+       virtual bool Send(const std::string & msg) = 0;
     };
 
 
