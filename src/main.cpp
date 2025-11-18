@@ -110,19 +110,55 @@ int main(int argc, char **argv)
 
     Configuration config;
 
+    int Socket = 6217;
+    ComChannel channel;
+    channel.Init(Socket);
+    channel.Connect("127.0.0.1", Socket);
+
     XMLInterp4Config xmlInterp(config);
 
-    ProgramInterpreter program(config);  
+    ProgramInterpreter program(config, channel);  
 
     if (!program.Read_XML_Config(xmlFile)) {
         std::cerr << "[MAIN] Błąd podczas wczytywania konfiguracji XML.\n";
         return 1;
     }
 
-    if (!program.ExecProgram(xmlFile)) {
-        std::cerr << "[MAIN] Błąd podczas wykonywania programu.\n";
-        return 2;
+    auto fmt = [](const std::string &s) {
+        std::string out;
+        for (char c : s) out += (c == ' ' ? ',' : c);
+        return out;
+    };
+
+    if (channel.GetSocket() < 0) {
+        std::cerr << "[MAIN] Uwaga: brak połączenia do serwera graficznego - nie wysyłam konfiguracji.\n";
+    } else {
+        for (const auto &obj : config.objects) {
+            std::ostringstream cmd;
+            cmd << "AddObj Name=" << obj.name;
+            if (!obj.rgb.empty()) cmd << " RGB=(" << fmt(obj.rgb) << ")";
+            if (!obj.scale.empty()) cmd << " Scale=(" << fmt(obj.scale) << ")";
+            if (!obj.shift.empty()) cmd << " Shift=(" << fmt(obj.shift) << ")";
+            if (!obj.rot.empty()) cmd << " RotXYZ_deg=(" << fmt(obj.rot) << ")";
+            if (!obj.trans.empty()) cmd << " Trans_m=(" << fmt(obj.trans) << ")";
+            cmd << "\n";
+            std::string s = cmd.str();
+            std::cout << "[MAIN] Wysyłam konfigurację do serwera: " << s;
+            if (!channel.Send(s)) {
+                std::cerr << "[MAIN] Błąd wysyłania komendy konfiguracji do serwera.\n";
+            }
+        }
     }
+
+        if (!program.ExecProgram(xmlFile)) {
+            std::cerr << "[MAIN] Błąd podczas wykonywania programu.\n";
+            return 2;
+        }
+
+    channel.Send("Clear \n");
+    channel.Close();
+
+    xercesc::XMLPlatformUtils::Terminate();
 
     std::cout << "\n[MAIN] Program zakończył się poprawnie\n";
     return 0;
