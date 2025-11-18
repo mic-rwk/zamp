@@ -19,6 +19,7 @@ public:
     LibInterface(const std::string &path): libPath(path) {}
 
     ~LibInterface() {
+        std::cout << "[LibInterface] Destruktor dla biblioteki: " << libPath << "\n";
         UnloadPlugin();
         CreateCmd = nullptr;
         GetCmdName = nullptr;
