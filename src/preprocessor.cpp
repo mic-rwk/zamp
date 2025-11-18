@@ -24,5 +24,7 @@ std::string RunPreprocessor(const std::string &filename)
         result += buffer.data();
     }
 
+    pclose(pipe);
+
     return result;
 }
