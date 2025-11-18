@@ -5,15 +5,16 @@
 
 class MobileObject : public AbstractMobileObj {
 
-    double roll_degree;
-    double pitch_degree;
-    double yaw_degree;
+    double roll_degree{0.0};
+    double pitch_degree{0.0};
+    double yaw_degree{0.0};
     Vector3D position_3D;
     std::string name;
 
     public:
 
     MobileObject() = default;
+    virtual ~MobileObject();
 
     double GetAng_Pitch_deg() const{
         return pitch_degree;
@@ -39,7 +40,7 @@ class MobileObject : public AbstractMobileObj {
         yaw_degree = yaw;
     }
 
-    const Vector3D & GetPositoin_m() {
+    const Vector3D & GetPositoin_m() const {
         return position_3D;
     }
 
@@ -51,7 +52,7 @@ class MobileObject : public AbstractMobileObj {
         name = sName;
     }
 
-    const std::string & GetName() {
+    const std::string & GetName() const {
         return name;
     }
 };
