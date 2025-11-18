@@ -1,4 +1,7 @@
 #include <iostream>
+#include <sstream>
+#include <memory>
+#include <unistd.h>
 #include "Interp4Move.hh"
 
 extern "C" {
@@ -44,8 +47,46 @@ bool Interp4Move::ExecCmd( AbstractScene      &rScn,
 			   AbstractComChannel &rComChann
 			 )
 {
-  std::cout << "[Move] ExecCmd (symulacja) dla obiektu " << objName  << "\n";
-  return true;
+  AbstractMobileObj * pObj = rScn.FindMobileObj(objName.c_str());
+  if (!pObj) {
+        std::cerr << "[Interp4Move] Nie znaleziono obiektu: " << objName.c_str() << "\n";
+        return false;
+    }
+
+    double speed_m_s = _Speed_mmS;
+    double distance_m = distance_mm;
+    double yaw_deg = pObj->GetAng_Yaw_deg();
+    double yaw_rad = yaw_deg * M_PI / 180.0;
+
+    Vector3D pos = pObj->GetPositoin_m();
+
+    double total_time_s = distance_m / speed_m_s;
+    const double step_time_s = 0.05;
+    int steps = static_cast<int>(total_time_s / step_time_s);
+
+    double step_dist = speed_m_s * step_time_s;
+
+    std::cout << "[Interp4Move] " << objName.c_str()
+              << " porusza się z prędkością " << _Speed_mmS
+              << " m/s przez " << distance_mm << " m ("
+              << steps << " kroków)\n";
+
+    for (int i = 0; i < steps; ++i) {
+        pos[0] += step_dist * cos(yaw_rad);
+        pos[1] += step_dist * sin(yaw_rad);
+        pObj->SetPosition_m(pos);
+
+        std::ostringstream cmd;
+        cmd << "UpdateObj Name=" << objName.c_str()
+            << " Trans_m=(" << pos[0] << "," << pos[1] << "," << pos[2] << ")\n";
+
+        rComChann.Send(cmd.str());
+
+        usleep(static_cast<useconds_t>(step_time_s * 1e6));
+    }
+
+    std::cout << "[Interp4Move] Zakończono ruch obiektu " << objName.c_str() << "\n";
+    return true;
 }
 
 
