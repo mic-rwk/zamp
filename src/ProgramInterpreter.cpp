@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <thread>
 
 #include <xercesc/sax2/SAX2XMLReader.hpp>
 #include <xercesc/sax2/XMLReaderFactory.hpp>
@@ -15,44 +16,39 @@ using namespace xercesc;
 
 bool ProgramInterpreter::ExecProgram(const char *fileName_Prog)
 {
+    std::cout << "\n[ExecProgram] Uruchamianie programu z pliku: " << fileName_Prog << "\n";
 
-    std::cout << "\n[ExecProgram] Uruchamianie programu na podstawie danych XML\n";
-
-    const Configuration &cfg = _xmlConfig;
-
-    if (cfg.plugins.empty()) {
-        std::cerr << "[ExecProgram] Brak bibliotek wczytanych z XML.\n";
+    std::string preprocessed;
+    try {
+        preprocessed = RunPreprocessor("komendy.cmd");
+    } catch (const std::exception &e) {
+        std::cerr << "[ExecProgram] Błąd podczas uruchamiania preprocesora: " << e.what() << "\n";
         return false;
     }
 
-    for (const auto &plugin : cfg.plugins) {
-        std::string fullLibPath = "libs/" + plugin.libName;
-        if (!_LibManager.AddLibrary(fullLibPath)) {
-            std::cerr << "[ExecProgram] Nie udało się załadować biblioteki: " << fullLibPath << "\n";
-        } else {
-            std::cout << "[ExecProgram] Załadowano: " << fullLibPath << "\n";
-        }
+    CommandsParser parser;
+    std::istringstream cmdStream(preprocessed);
+    if (!parser.ReadCommandsList(cmdStream)) {
+        std::cerr << "[ExecProgram] Błąd podczas parsowania komend.\n";
+        return false;
     }
 
-    for (const auto &obj : cfg.objects) {
-        std::cout << "\n[Obiekt] " << obj.name
-                  << "\n  Shift: " << obj.shift
-                  << "\n  Scale: " << obj.scale
-                  << "\n  RotXYZ: " << obj.rot
-                  << "\n  Trans: " << obj.trans
-                  << "\n  RGB: " << obj.rgb << "\n";
-    }
+    // const char *envMax = std::getenv("ZAMP_MAX_CMDS");
+    // int maxCmds = envMax ? std::atoi(envMax) : -1;
+    // int cmdCount = 0;
 
-    for (const auto & plugin : cfg.plugins) {
-        std::string baseName = plugin.libName;
-        size_t pos = baseName.rfind(".so");   
-        std::string cmdName = baseName.substr(10, pos-10);
-
+    for (const auto &cmd : parser.GetCommands()) {
+        // if (maxCmds >= 0 && cmdCount >= maxCmds) break;
+        std::string libName = "libs/libInterp4" + cmd.name + ".so";
+        std::string cmdName = cmd.name;
 
         auto lib = _LibManager.Find(cmdName);
         if (!lib) {
-            std::cerr << "[ExecProgram] Nie znaleziono wtyczki dla: " << cmdName << "\n";
-            continue;
+            if (!_LibManager.AddLibrary(libName)) {
+                std::cerr << "[ExecProgram] Nie udało się załadować biblioteki: " << libName << "\n";
+                continue;
+            }
+            lib = _LibManager.Find(cmdName);
         }
 
         auto command = lib->CreateCmd();
@@ -61,59 +57,27 @@ bool ProgramInterpreter::ExecProgram(const char *fileName_Prog)
             continue;
         }
 
-        std::istringstream params("");
-        if (!command->ReadParams(params)) {
+        std::istringstream paramStream(cmd.params);
+        if (!command->ReadParams(paramStream)) {
             std::cerr << "[ExecProgram] Błąd wczytywania parametrów dla komendy: " << cmdName << "\n";
             continue;
         }
+        std::istringstream objStream(cmd.params);
+        std::string objNameParam;
+        objStream >> objNameParam;
 
         command->PrintParams();
 
-        if (!command->ExecCmd(_Scn, "ObiektA", _Chann2Serv)) {
+        if (!command->ExecCmd(_Scn, objNameParam.c_str(), _Chann2Serv)) {
             std::cerr << "[ExecProgram] Nie udało się wykonać komendy: " << cmdName << "\n";
         }
+        delete command;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        // ++cmdCount;
     }
 
-    std::cout << "\n[ExecProgram] Zakończono wykonanie programu XML.\n";
+    std::cout << "\n[ExecProgram] Zakończono wykonanie programu.\n";
     return true;
-    // std::string preprocessed = RunPreprocessor(fileName_Prog);
-    // std::istringstream cmdStream(preprocessed);
-
-    // CommandsParser parser;
-    // if (!parser.ReadCommandsList(cmdStream)) {
-    //     std::cerr << "[ProgInterp] Błąd podczas parsowania komend.\n";
-    //     return false;
-    // }
-
-    // for (const auto &cmd : parser.GetCommands()) {
-    //     std::string libName = "libs/libInterp4" + cmd.name + ".so";
-
-    //     auto lib = _LibManager.Find(cmd.name);
-    //     if (!lib) {
-    //         if (!_LibManager.AddLibrary(libName))
-    //             continue;
-    //         lib = _LibManager.Find(cmd.name);
-    //     }
-
-    //     auto command = lib->CreateCmd();
-    //     if(!command) {
-    //         std::cerr << "[ProgramInterpreter] Nie udało się utworzyć komendy: " << cmd.name;
-    //         continue;
-    //     }
-
-    //     std::istringstream paramStream(cmd.params);
-    //     if (!command->ReadParams(paramStream)) {
-    //         std::cerr << "[ProgramInterpreter] Błąd parametrów dla komendy: " << cmd.name << "\n";
-    //         continue;
-    //     }
-
-    //     command->PrintParams();
-
-    //     if (!command->ExecCmd(_Scn, "ObiektA", _Chann2Serv)) {
-    //         std::cerr << "[ProgramInterpreter] ExecCmd nie powiódł się dla " << cmd.name << "\n";
-    //     }
-    // }
-    // return true;
 }
 
 bool ProgramInterpreter::Read_XML_Config(const char *fileName) {
@@ -129,7 +93,7 @@ bool ProgramInterpreter::Read_XML_Config(const char *fileName) {
             return 1;
    }
 
-   SAX2XMLReader* pParser = XMLReaderFactory::createXMLReader();
+   auto pParser = std::unique_ptr<SAX2XMLReader>(XMLReaderFactory::createXMLReader());
 
    pParser->setFeature(XMLUni::fgSAX2CoreNameSpaces, true);
    pParser->setFeature(XMLUni::fgSAX2CoreValidation, true);
@@ -140,9 +104,9 @@ bool ProgramInterpreter::Read_XML_Config(const char *fileName) {
    pParser->setFeature(XMLUni::fgXercesValidationErrorAsFatal, true);
 
 
-   DefaultHandler* pHandler = new XMLInterp4Config(_xmlConfig);
-   pParser->setContentHandler(pHandler);
-   pParser->setErrorHandler(pHandler);
+   auto pHandler = std::make_unique<XMLInterp4Config>(_xmlConfig);
+   pParser->setContentHandler(pHandler.get());
+   pParser->setErrorHandler(pHandler.get());
 
    try {
      
@@ -183,7 +147,6 @@ bool ProgramInterpreter::Read_XML_Config(const char *fileName) {
             return false;
    }
 
-   delete pParser;
-   delete pHandler;
+//    XMLPlatformUtils::Terminate();
    return true;
 }

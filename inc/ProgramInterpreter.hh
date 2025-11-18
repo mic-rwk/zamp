@@ -9,14 +9,14 @@
 #include <string>
 
 class ProgramInterpreter {
-    Scene _Scn;
     Set4LibInterfaces _LibManager;
-    ComChannel _Chann2Serv;
+    Scene _Scn;
+    ComChannel & _Chann2Serv;
     Configuration & _xmlConfig;
 
 public:
-    explicit ProgramInterpreter(Configuration & config) 
-    : _xmlConfig(config) {}
+    explicit ProgramInterpreter(Configuration & config, ComChannel & channel)
+    : _Chann2Serv(channel), _xmlConfig(config) {}
     bool Read_XML_Config(const char *fileName);
     bool ExecProgram(const char *fileName_Prog);
 };
