@@ -1,11 +1,18 @@
-#define ROTATE_SPEED 30
+#define ROTATE_SPEED 5
 /*
 * Przykładowy zestaw poleceń
 */
-Set Ob_A 2 0 3 30 10 0 // Polozenie obiektu A
-Set Ob_B 10 10 3 0 0 20 // Polozenie obiektu B
-Rotate Ob_B OY ROTATE_SPEED 40
-Pause 1000 /* Zawieszenie dzialania na 1 sek. */
-Move Ob_A 10 10
-Rotate Ob_B OZ ROTATE_SPEED 60
-Move Ob_B 10 20
+Set Podstawa 0 0 0 0 0 45 // Polozenie obiektu A
+Set Podstawa.Ramie1 0 0 0 0 0 0 // Polozenie obiektu B
+Set Podstawa.Ramie1.Ramie2 0 0 0 0 0 0
+Pause 3000
+Rotate Podstawa.Ramie1 OY ROTATE_SPEED 90
+Pause 3000 /* Zawieszenie dzialania na 5 sek. */
+Move Podstawa 1 2
+Pause 3000 /* Zawieszenie dzialania na 3 sek. */
+Rotate Podstawa.Ramie1 OY ROTATE_SPEED 45
+Pause 3000 /* Zawieszenie dzialania na 3 sek. */
+Rotate Podstawa.Ramie1.Ramie2 OY 36 360
+Pause 3000 /* Zawieszenie dzialania na 3 sek. */
+Rotate Podstawa.Ramie1.Ramie2 OX 36 360
+Pause 3000 /* Zawieszenie dzialania na 3 sek. */
