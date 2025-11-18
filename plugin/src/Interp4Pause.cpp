@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Interp4Pause.hh"
+#include <thread>
 
 extern "C" {
     const char* GetCmdName() {return "Pause"; }
@@ -28,7 +29,8 @@ const char* Interp4Pause::GetCmdName() const {
 }
 
 bool Interp4Pause::ExecCmd(AbstractScene &/*rScn*/, const char */*sMobObjName*/, AbstractComChannel &/*rComChann*/) {
-    std::cout << "[Pause] ExecCmd na " << time_ms << " ms\n";
+    std::cout << "[Interp4Pause] Pauza " << time_ms << " ms.\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds((int)time_ms));
     return true;
 }
 
