@@ -13,7 +13,7 @@ class Scene : public AbstractScene {
 
 public:
     Scene() = default;
-    ~Scene() override = default;
+    ~Scene() override;
 
     void SetMobileObjs(const std::map<std::string, std::shared_ptr<AbstractMobileObj>> &objs);
     AbstractMobileObj * FindMobileObj(const char *sName) override;
