@@ -7,12 +7,19 @@
 #include <sstream>
 #include <vector>
 
+enum class CmdType {
+    Normal,
+    ParallelBegin,
+    ParallelEnd
+};
+
 struct CommandData {
     std::string name;
     std::string params;
+    CmdType type;
 
-    CommandData(const std::string &cmdName, const std::string &cmdParams)
-        : name(cmdName), params(cmdParams) {}
+    CommandData(const std::string &cmdName, const std::string &cmdParams, CmdType cmdType = CmdType::Normal)
+        : name(cmdName), params(cmdParams), type(cmdType) {}
 
     std::istringstream GetParamStream() const {
         return std::istringstream(params);
