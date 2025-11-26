@@ -45,7 +45,37 @@ bool ProgramInterpreter::ExecProgram(const char *fileName_Prog)
         }
     }
 
+    std::vector<CommandData> parallelBlock;
+    bool inParallel = false;
+
     for (const auto &cmd : parser.GetCommands()) {
+
+        if (cmd.type == CmdType::ParallelBegin) {
+            inParallel = true;
+            parallelBlock.clear();
+            continue;
+        } else if (cmd.type == CmdType::ParallelEnd) {
+            inParallel = false;
+            std::vector<std::thread> threads;
+            for (const auto &pCmd : parallelBlock) {
+                threads.emplace_back(
+                    &ProgramInterpreter::ExecSingleCommand,
+                    this,
+                    pCmd,
+                    std::ref(_Scn),
+                    std::ref(_Chann2Serv),
+                    std::ref(_LibManager)
+                );
+        }
+            // Wait for all threads to finish
+            for (auto &t : threads) {
+                if (t.joinable()) {
+                    t.join();
+                }
+            }
+            continue;
+        } else if(!inParallel) {
+
         std::string cmdName = cmd.name;
 
         auto lib = _LibManager.Find(cmdName);
@@ -76,11 +106,51 @@ bool ProgramInterpreter::ExecProgram(const char *fileName_Prog)
         }
         delete command;
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        // ++cmdCount;
+        } else{
+            parallelBlock.push_back(cmd);
+            continue;
+        }
     }
 
     std::cout << "\n[ExecProgram] Zakończono wykonanie programu.\n";
     return true;
+}
+
+void ProgramInterpreter::ExecSingleCommand(CommandData cmd,
+                       Scene &scn,
+                       ComChannel &chan,
+                       Set4LibInterfaces &_LibManager)
+{
+    // ---- BEZPIECZNY PRINT ----
+    {
+        std::cout << "[Thread " << std::this_thread::get_id()
+                  << "] Start polecenia: " << cmd.name
+                  << "  Params: " << cmd.params << "\n";
+    }
+
+    auto lib = _LibManager.Find(cmd.name);
+    if (!lib) {
+        std::cerr << "Brak biblioteki dla: " << cmd.name << "\n";
+        return;
+    }
+
+    auto command = lib->CreateCmd();
+    std::istringstream paramStream(cmd.params);
+    command->ReadParams(paramStream);
+
+    std::istringstream objStream(cmd.params);
+    std::string objName;
+    objStream >> objName;
+
+        command->ExecCmd(scn, objName.c_str(), chan);
+
+
+    delete command;
+
+    // ---- KONIEC ----
+        std::cout << "[Thread " << std::this_thread::get_id()
+                  << "] KONIEC polecenia: " << cmd.name << "\n";
+    
 }
 
 bool ProgramInterpreter::Read_XML_Config(const char *fileName) {

@@ -58,14 +58,20 @@ bool Interp4Rotate::ExecCmd(AbstractScene & rScn, const char * sMobObjName, Abst
         else if (axisName == "OZ")
             yaw += step_deg;
 
-        pMob->SetAng_Roll_deg(roll);
-        pMob->SetAng_Pitch_deg(pitch);
-        pMob->SetAng_Yaw_deg(yaw);
+        {
+            std::lock_guard<std::mutex> lock(rScn.scene_mutex);
+            pMob->SetAng_Roll_deg(roll);
+            pMob->SetAng_Pitch_deg(pitch);
+            pMob->SetAng_Yaw_deg(yaw);
+        }
 
-        std::ostringstream cmd;
-        cmd << "UpdateObj Name=" << objName
-            << " RotXYZ_deg=(" << roll << "," << pitch << "," << yaw << ")\n";
-        rComChann.Send(cmd.str());
+        {
+            std::lock_guard<std::mutex> lock(rComChann.comchann_mutex);
+            std::ostringstream cmd;
+            cmd << "UpdateObj Name=" << objName
+                << " RotXYZ_deg=(" << roll << "," << pitch << "," << yaw << ")\n";
+            rComChann.Send(cmd.str());
+        }
 
         usleep((useconds_t)sleep_us);
         rotated += step_deg;

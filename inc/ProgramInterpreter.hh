@@ -7,6 +7,9 @@
 #include "CommandsParser.hh"
 #include "../inc/Configuration.hh"
 #include <string>
+#include <mutex>
+#include <list>
+#include <thread>
 
 class ProgramInterpreter {
     Set4LibInterfaces _LibManager;
@@ -19,6 +22,11 @@ public:
     : _Chann2Serv(channel), _xmlConfig(config) {}
     bool Read_XML_Config(const char *fileName);
     bool ExecProgram(const char *fileName_Prog);
+
+    void ExecSingleCommand(CommandData cmd,
+                       Scene &scn,
+                       ComChannel &chan,
+                       Set4LibInterfaces &_LibManager);
 };
 
 #endif

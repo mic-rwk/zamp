@@ -6,7 +6,7 @@
 # pragma implementation
 #endif
 
-#include "AbstractInterp4Command.hh"
+#include "../../inc/AbstractInterp4Command.hh"
 
 /*!
  * \file

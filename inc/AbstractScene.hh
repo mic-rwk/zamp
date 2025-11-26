@@ -3,6 +3,7 @@
 
 
 #include "AbstractMobileObj.hh"
+#include <mutex>
 
 /*!
  * \file 
@@ -40,6 +41,7 @@
 	*  \param[in] pMobObj - wskaźnik na istniejący obiekt.
         */
         virtual void AddMobileObj(AbstractMobileObj *pMobObj) = 0;
+        std::mutex scene_mutex;
   };
 
 #endif

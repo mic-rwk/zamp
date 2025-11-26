@@ -7,6 +7,7 @@
 #endif
 
 #include <bits/stdc++.h>
+#include "../../inc/MobileObject.hh"
 #include "../../inc/AbstractInterp4Command.hh"
 
 class Interp4Set : public AbstractInterp4Command {

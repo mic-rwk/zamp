@@ -23,16 +23,16 @@ LDFLAGS=-Wall
 
 
 interp: obj/main.o obj/preprocessor.o obj/LibInterface.o obj/CommandsParser.o obj/Scene.o obj/Set4LibInterfaces.o\
-obj/ComChannel.o obj/ProgramInterpreter.o obj/xmlinterp.o obj/Configuration.o
+obj/ComChannel.o obj/ProgramInterpreter.o obj/xmlinterp.o obj/Configuration.o obj/MobileObject.o
 	g++ ${LDFLAGS} -g -o interp  obj/main.o obj/preprocessor.o obj/LibInterface.o obj/CommandsParser.o obj/Scene.o\
-	 obj/Set4LibInterfaces.o obj/ComChannel.o obj/ProgramInterpreter.o obj/xmlinterp.o\
-	 obj/Configuration.o -lxerces-c -ldl
+	 obj/Set4LibInterfaces.o obj/ComChannel.o obj/ProgramInterpreter.o obj/xmlinterp.o \
+	 obj/Configuration.o obj/MobileObject.o -lxerces-c -ldl -lpthread
 
 obj/main.o: src/main.cpp inc/AbstractInterp4Command.hh inc/AbstractScene.hh\
             inc/AbstractComChannel.hh inc/preprocessor.hh inc/LibInterface.hh\
 			inc/CommandsParser.hh inc/Scene.hh inc/Set4LibInterfaces.hh\
 			inc/ComChannel.hh inc/ProgramInterpreter.hh\
-			inc/xmlinterp.hh inc/Configuration.hh
+			inc/xmlinterp.hh inc/Configuration.hh inc/MobileObject.hh
 	g++ -c ${CPPFLAGS} -o obj/main.o src/main.cpp
 
 obj/preprocessor.o: src/preprocessor.cpp inc/preprocessor.hh
@@ -61,6 +61,9 @@ obj/xmlinterp.o: src/xmlinterp.cpp inc/xmlinterp.hh
 
 obj/Configuration.o: src/Configuration.cpp inc/Configuration.hh
 	g++ -c ${CPPFLAGS} -o obj/Configuration.o src/Configuration.cpp
+
+obj/MobileObject.o: src/MobileObject.cpp inc/MobileObject.hh
+	g++ -c -fPIC ${CPPFLAGS} -o obj/MobileObject.o src/MobileObject.cpp	
 
 doc:
 	cd dox; make

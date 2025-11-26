@@ -74,14 +74,19 @@ bool Interp4Move::ExecCmd( AbstractScene      &rScn,
     for (int i = 0; i < steps; ++i) {
         pos[0] += step_dist * cos(yaw_rad);
         pos[1] += step_dist * sin(yaw_rad);
-        pObj->SetPosition_m(pos);
+        {
+            std::lock_guard<std::mutex> lock(rScn.scene_mutex);
+            pObj->SetPosition_m(pos);
+      }
+        
+        {
+            std::lock_guard<std::mutex> lock(rComChann.comchann_mutex);
+            std::ostringstream cmd;
+            cmd << "UpdateObj Name=" << objName.c_str()
+                << " Trans_m=(" << pos[0] << "," << pos[1] << "," << pos[2] << ")\n";
 
-        std::ostringstream cmd;
-        cmd << "UpdateObj Name=" << objName.c_str()
-            << " Trans_m=(" << pos[0] << "," << pos[1] << "," << pos[2] << ")\n";
-
-        rComChann.Send(cmd.str());
-
+            rComChann.Send(cmd.str());
+        }
         usleep(static_cast<useconds_t>(step_time_s * 1e6));
     }
 
