@@ -33,22 +33,25 @@ bool ProgramInterpreter::ExecProgram(const char *fileName_Prog)
         return false;
     }
 
-    // const char *envMax = std::getenv("ZAMP_MAX_CMDS");
-    // int maxCmds = envMax ? std::atoi(envMax) : -1;
-    // int cmdCount = 0;
+    std::cout << "[ExecProgram] Ładowanie pluginów z XML\n";
+
+    for (const auto &p : _xmlConfig.plugins) {
+        std::string fullPath = "libs/" + p.libName;
+
+        if (!_LibManager.AddLibrary(fullPath)) {
+            std::cerr << "[ExecProgram] Błąd ładowania biblioteki: " << fullPath << "\n";
+        } else {
+            std::cout << "[ExecProgram] Załadowano: " << fullPath << "\n";
+        }
+    }
 
     for (const auto &cmd : parser.GetCommands()) {
-        // if (maxCmds >= 0 && cmdCount >= maxCmds) break;
-        std::string libName = "libs/libInterp4" + cmd.name + ".so";
         std::string cmdName = cmd.name;
 
         auto lib = _LibManager.Find(cmdName);
         if (!lib) {
-            if (!_LibManager.AddLibrary(libName)) {
-                std::cerr << "[ExecProgram] Nie udało się załadować biblioteki: " << libName << "\n";
+                std::cerr << "[ExecProgram] Nie udało się załadować biblioteki dla: " << cmdName << "\n";
                 continue;
-            }
-            lib = _LibManager.Find(cmdName);
         }
 
         auto command = lib->CreateCmd();

@@ -60,12 +60,11 @@ void XMLInterp4Config::ProcessLibAttrs(const xercesc::Attributes  &rAttrs)
       exit(1);
  }         
 
- XMLSize_t  Size = 0;
+ XMLSize_t Size = 0;
  char* sLibName = xercesc::XMLString::transcode(rAttrs.getValue(Size));
 
- cout << "  Nazwa biblioteki: " << sLibName << endl;
-
- // Tu trzeba wpisać własny kod ...
+ cout << "[XMLInterp] Plugin: " << sLibName << endl;
+ config.AddPlugin(sLibName);
 
  xercesc::XMLString::release(&sParamName);
  xercesc::XMLString::release(&sLibName);

@@ -14,7 +14,7 @@ class MobileObject : public AbstractMobileObj {
     public:
 
     MobileObject() = default;
-    virtual ~MobileObject() = default;
+    virtual ~MobileObject();
 
     double GetAng_Pitch_deg() const{
         return pitch_degree;

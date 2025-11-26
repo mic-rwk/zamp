@@ -44,6 +44,7 @@ Scene::~Scene() {
         sp.reset();
         std::cout << "[Scene] Zniszczono obiekt: '" << n << "'\n";
         it = _mobileObjs.erase(it);
+        std::cout << "[Scene] Usuwam obiekt z mapy: '" << n << "'\n";
     }
     std::cout << "[Scene] Destruktor sceny - koniec\n";
 }
