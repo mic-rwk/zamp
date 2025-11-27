@@ -7,3 +7,7 @@ interp
 klient/
 serwer-z-tlem-Qt6/
 building/
+*.o
+build-aux/
+autom4te.cache/
+m4/

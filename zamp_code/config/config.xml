@@ -1,0 +1,18 @@
+  <Config>
+   <Plugins>
+      <Lib Name="libInterp4Move.so"/>
+      <Lib Name="libInterp4Rotate.so"/>
+      <Lib Name="libInterp4Pause.so"/>
+      <Lib Name="libInterp4Set.so"/>
+   </Plugins>
+   <Objects>
+     <Cube Name="Podstawa" Shift="0 0 0" Scale="1 1 1"
+                 RotXYZ_deg="10 0 0" Trans_m="0.1 0 0" RGB="0 0 255"/>
+     <Cube Name="Podstawa.Ramie1" Shift="0.3 1.5 0" Scale="2 0.5 0.5"
+	                                                 Trans_m="1 0 1"/>
+     <Cube Name="Podstawa.Ramie1.Ramie2" Shift="6 5 0"
+	         Scale="0.2 0.2 1" Trans_m="0 5 0" RGB="15 230 75" 
+           RotXYZ_deg="0 90 0"/>
+   </Objects>
+  </Config>
+  

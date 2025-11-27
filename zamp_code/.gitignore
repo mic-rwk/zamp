@@ -1,0 +1,15 @@
+dox/
+obj/
+plugin/obj/
+czytaj.to
+interp
+klient/
+serwer-z-tlem-Qt6/
+*.o
+*.in
+*.la
+.deps/
+.libs/
+*.lo
+src-lib/*.la
+src-lib/*.o
