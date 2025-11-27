@@ -27,7 +27,7 @@ obj/ComChannel.o obj/ProgramInterpreter.o obj/xmlinterp.o obj/Configuration.o ob
 obj/main.o: src/main.cpp inc/AbstractInterp4Command.hh inc/AbstractScene.hh\
             inc/AbstractComChannel.hh inc/preprocessor.hh inc/LibInterface.hh\
 			inc/CommandsParser.hh inc/Scene.hh inc/Set4LibInterfaces.hh\
-			inc/ComChannel.hh inc/ProgramInterpreter.hh\
+			inc/ComChannel.hh inc/ProgramInterpreter.hh inc/AbstractMobileObj.hh\
 			inc/xmlinterp.hh inc/Configuration.hh inc/MobileObject.hh\
 			inc/Interp4Move.hh inc/Interp4Set.hh inc/Interp4Pause.hh inc/Interp4Rotate.hh
 	g++ -c ${CPPFLAGS} -o obj/main.o src/main.cpp
@@ -93,7 +93,7 @@ obj/Interp4Move.o: src/Interp4Move.cpp inc/AbstractInterp4Command.hh\
 
 obj/Interp4Set.o: src/Interp4Set.cpp inc/AbstractInterp4Command.hh\
 				   inc/AbstractScene.hh inc/AbstractComChannel.hh\
-				   inc/Interp4Set.hh inc/AbstractMobileObject.hh
+				   inc/Interp4Set.hh inc/AbstractMobileObj.hh
 	g++ -c ${CPPFLAGS} -o obj/Interp4Set.o src/Interp4Set.cpp
 
 obj/Interp4Pause.o: src/Interp4Pause.cpp inc/AbstractInterp4Command.hh\
