@@ -69,7 +69,7 @@ lib/libInterp4Move.so: obj/Interp4Move.o
 	@echo
 
 lib/libInterp4Set.so: obj/Interp4Set.o
-	g++ ${LDFLAGS} -o ../lib/libInterp4Set.so obj/Interp4Set.o ../obj/MobileObject.o
+	g++ ${LDFLAGS} -o ../lib/libInterp4Set.so obj/Interp4Set.o obj/MobileObject.o
 	@echo
 	@echo "  Wtyczka dla polecenia 'Set' zostala utworzona."
 	@echo
