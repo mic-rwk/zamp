@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Interp4Pause.hh"
+#include "../inc/Interp4Pause.hh"
 #include <thread>
 
 extern "C" {

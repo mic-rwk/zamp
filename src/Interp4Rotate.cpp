@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Interp4Rotate.hh"
+#include "../inc/Interp4Rotate.hh"
 
 extern "C" {
     const char* GetCmdName() {return "Rotate"; }

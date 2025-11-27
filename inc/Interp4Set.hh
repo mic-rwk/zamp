@@ -1,5 +1,5 @@
-#ifndef  COMMAND4PAUSE_HH
-#define  COMMAND4PAUSE_HH
+#ifndef  COMMAND4SET_HH
+#define  COMMAND4SET_HH
 
 #ifndef __GNUG__
 # pragma interface
@@ -7,13 +7,16 @@
 #endif
 
 #include <bits/stdc++.h>
-#include "../../inc/AbstractInterp4Command.hh"
+#include "MobileObject.hh"
+#include "AbstractInterp4Command.hh"
 
-class Interp4Pause : public AbstractInterp4Command {
-    double time_ms;
+class Interp4Set : public AbstractInterp4Command {
+    std::string objName;
+    double x{}, y{}, z{};
+    double angX{}, angY{}, angZ{};
 public:
-    Interp4Pause() : time_ms(0) {}
-    virtual ~Interp4Pause() = default;
+    Interp4Set() : objName(""), x(0), y(0), z(0), angX(0), angY(0), angZ(0) {}
+    virtual ~Interp4Set() = default;
 
     void PrintCmd() const override;
 
@@ -30,4 +33,4 @@ public:
     static AbstractInterp4Command* CreateCmd();
 };
 
-#endif   // COMMAND4PAUSE_HH
+#endif   // COMMAND4SET_HH

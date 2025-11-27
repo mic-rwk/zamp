@@ -1,5 +1,5 @@
-#ifndef  COMMAND4ROTATE_HH
-#define  COMMAND4ROTATE_HH
+#ifndef  COMMAND4PAUSE_HH
+#define  COMMAND4PAUSE_HH
 
 #ifndef __GNUG__
 # pragma interface
@@ -7,16 +7,13 @@
 #endif
 
 #include <bits/stdc++.h>
-#include "../../inc/AbstractInterp4Command.hh"
+#include "AbstractInterp4Command.hh"
 
-class Interp4Rotate : public AbstractInterp4Command {
-    std::string objName;
-    std::string axisName;
-    double angleDegree;
-    double angularSpeed;
+class Interp4Pause : public AbstractInterp4Command {
+    double time_ms;
 public:
-    Interp4Rotate() : objName(""), axisName(""), angleDegree(0), angularSpeed(0) {}
-    virtual ~Interp4Rotate() = default;
+    Interp4Pause() : time_ms(0) {}
+    virtual ~Interp4Pause() = default;
 
     void PrintCmd() const override;
 
@@ -33,4 +30,4 @@ public:
     static AbstractInterp4Command* CreateCmd();
 };
 
-#endif   // COMMAND4ROTATE_HH
+#endif   // COMMAND4PAUSE_HH

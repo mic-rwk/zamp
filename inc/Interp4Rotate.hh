@@ -1,5 +1,5 @@
-#ifndef  COMMAND4SET_HH
-#define  COMMAND4SET_HH
+#ifndef  COMMAND4ROTATE_HH
+#define  COMMAND4ROTATE_HH
 
 #ifndef __GNUG__
 # pragma interface
@@ -7,16 +7,16 @@
 #endif
 
 #include <bits/stdc++.h>
-#include "../../inc/MobileObject.hh"
-#include "../../inc/AbstractInterp4Command.hh"
+#include "AbstractInterp4Command.hh"
 
-class Interp4Set : public AbstractInterp4Command {
+class Interp4Rotate : public AbstractInterp4Command {
     std::string objName;
-    double x{}, y{}, z{};
-    double angX{}, angY{}, angZ{};
+    std::string axisName;
+    double angleDegree;
+    double angularSpeed;
 public:
-    Interp4Set() : objName(""), x(0), y(0), z(0), angX(0), angY(0), angZ(0) {}
-    virtual ~Interp4Set() = default;
+    Interp4Rotate() : objName(""), axisName(""), angleDegree(0), angularSpeed(0) {}
+    virtual ~Interp4Rotate() = default;
 
     void PrintCmd() const override;
 
@@ -33,4 +33,4 @@ public:
     static AbstractInterp4Command* CreateCmd();
 };
 
-#endif   // COMMAND4SET_HH
+#endif   // COMMAND4ROTATE_HH

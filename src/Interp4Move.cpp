@@ -2,7 +2,7 @@
 #include <sstream>
 #include <memory>
 #include <unistd.h>
-#include "Interp4Move.hh"
+#include "../inc/Interp4Move.hh"
 
 extern "C" {
   AbstractInterp4Command* CreateCmd(void);

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Interp4Set.hh"
+#include "../inc/Interp4Set.hh"
 
 extern "C" {
     const char* GetCmdName() {return "Set"; }
