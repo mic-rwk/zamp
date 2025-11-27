@@ -11,5 +11,7 @@ serwer-z-tlem-Qt6/
 .deps/
 .libs/
 *.lo
+*.Plo
 src-lib/*.la
 src-lib/*.o
+src-lib/*.Plo
