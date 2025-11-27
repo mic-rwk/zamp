@@ -1,5 +1,5 @@
 __start__: obj __lines_for_space__ interp
-	export LD_LIBRARY_PATH="./libs"; ./interp
+	export LD_LIBRARY_PATH="./lib"; ./interp config/config.xml komendy.cmd
 
 obj:
 	mkdir obj
@@ -29,7 +29,7 @@ obj/main.o: src/main.cpp inc/AbstractInterp4Command.hh inc/AbstractScene.hh\
 			inc/CommandsParser.hh inc/Scene.hh inc/Set4LibInterfaces.hh\
 			inc/ComChannel.hh inc/ProgramInterpreter.hh\
 			inc/xmlinterp.hh inc/Configuration.hh inc/MobileObject.hh\
-			inc/Interp4Move.hh inc/Interp4Set.hh inc/Interp4Pause.hh inc/Interp4Rotate.hh inc/AbstractInterp4Command.hh
+			inc/Interp4Move.hh inc/Interp4Set.hh inc/Interp4Pause.hh inc/Interp4Rotate.hh
 	g++ -c ${CPPFLAGS} -o obj/main.o src/main.cpp
 
 obj/preprocessor.o: src/preprocessor.cpp inc/preprocessor.hh
@@ -62,26 +62,26 @@ obj/Configuration.o: src/Configuration.cpp inc/Configuration.hh
 obj/MobileObject.o: src/MobileObject.cpp inc/MobileObject.hh
 	g++ -c -fPIC ${CPPFLAGS} -o obj/MobileObject.o src/MobileObject.cpp
 
-libs/libInterp4Move.so: obj/Interp4Move.o
-	g++ ${LDFLAGS} -o ../libs/libInterp4Move.so obj/Interp4Move.o
+lib/libInterp4Move.so: obj/Interp4Move.o
+	g++ ${LDFLAGS} -o ../lib/libInterp4Move.so obj/Interp4Move.o
 	@echo
 	@echo "  Wtyczka dla polecenia 'Move' zostala utworzona."
 	@echo
 
-libs/libInterp4Set.so: obj/Interp4Set.o
-	g++ ${LDFLAGS} -o ../libs/libInterp4Set.so obj/Interp4Set.o ../obj/MobileObject.o
+lib/libInterp4Set.so: obj/Interp4Set.o
+	g++ ${LDFLAGS} -o ../lib/libInterp4Set.so obj/Interp4Set.o ../obj/MobileObject.o
 	@echo
 	@echo "  Wtyczka dla polecenia 'Set' zostala utworzona."
 	@echo
 
-libs/libInterp4Pause.so: obj/Interp4Pause.o
-	g++ ${LDFLAGS} -o ../libs/libInterp4Pause.so obj/Interp4Pause.o
+lib/libInterp4Pause.so: obj/Interp4Pause.o
+	g++ ${LDFLAGS} -o ../lib/libInterp4Pause.so obj/Interp4Pause.o
 	@echo
 	@echo "  Wtyczka dla polecenia 'Pause' zostala utworzona."
 	@echo
 
-libs/libInterp4Rotate.so: obj/Interp4Rotate.o
-	g++ ${LDFLAGS} -o ../libs/libInterp4Rotate.so obj/Interp4Rotate.o
+lib/libInterp4Rotate.so: obj/Interp4Rotate.o
+	g++ ${LDFLAGS} -o ../lib/libInterp4Rotate.so obj/Interp4Rotate.o
 	@echo
 	@echo "  Wtyczka dla polecenia 'Rotate' zostala utworzona."
 	@echo
@@ -93,7 +93,7 @@ obj/Interp4Move.o: src/Interp4Move.cpp inc/AbstractInterp4Command.hh\
 
 obj/Interp4Set.o: src/Interp4Set.cpp inc/AbstractInterp4Command.hh\
 				   inc/AbstractScene.hh inc/AbstractComChannel.hh\
-				   inc/Interp4Set.hh inc/MobileObject.hh
+				   inc/Interp4Set.hh inc/AbstractMobileObject.hh
 	g++ -c ${CPPFLAGS} -o obj/Interp4Set.o src/Interp4Set.cpp
 
 obj/Interp4Pause.o: src/Interp4Pause.cpp inc/AbstractInterp4Command.hh\
