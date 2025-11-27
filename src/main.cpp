@@ -75,7 +75,7 @@ void LoadPlugin(){
           "./libs/libInterp4Move.so"
       };
 
-      std::vector<std::unique_ptr<LibInterface>> libs;
+      std::vector<std::unique_ptr<LibInterface>> libs(4);
       for (const auto &p : pluginNames) {
           if (!std::filesystem::exists(p)) {
               std::cout << "Plik wtyczki " << p << " nie istnieje — pomijam.\n";

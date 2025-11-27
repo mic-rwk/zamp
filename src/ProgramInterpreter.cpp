@@ -6,6 +6,7 @@
 #include <sstream>
 #include <iostream>
 #include <thread>
+#include <list>
 
 #include <xercesc/sax2/SAX2XMLReader.hpp>
 #include <xercesc/sax2/XMLReaderFactory.hpp>
@@ -45,7 +46,7 @@ bool ProgramInterpreter::ExecProgram(const char *fileName_Prog)
         }
     }
 
-    std::vector<CommandData> parallelBlock;
+    std::list<CommandData> parallelBlock;
     bool inParallel = false;
 
     for (const auto &cmd : parser.GetCommands()) {
@@ -56,7 +57,7 @@ bool ProgramInterpreter::ExecProgram(const char *fileName_Prog)
             continue;
         } else if (cmd.type == CmdType::ParallelEnd) {
             inParallel = false;
-            std::vector<std::thread> threads;
+            std::vector<std::thread> threads(10);
             for (const auto &pCmd : parallelBlock) {
                 threads.emplace_back(
                     &ProgramInterpreter::ExecSingleCommand,
@@ -67,7 +68,6 @@ bool ProgramInterpreter::ExecProgram(const char *fileName_Prog)
                     std::ref(_LibManager)
                 );
         }
-            // Wait for all threads to finish
             for (auto &t : threads) {
                 if (t.joinable()) {
                     t.join();
@@ -121,7 +121,6 @@ void ProgramInterpreter::ExecSingleCommand(CommandData cmd,
                        ComChannel &chan,
                        Set4LibInterfaces &_LibManager)
 {
-    // ---- BEZPIECZNY PRINT ----
     {
         std::cout << "[Thread " << std::this_thread::get_id()
                   << "] Start polecenia: " << cmd.name
@@ -147,7 +146,6 @@ void ProgramInterpreter::ExecSingleCommand(CommandData cmd,
 
     delete command;
 
-    // ---- KONIEC ----
         std::cout << "[Thread " << std::this_thread::get_id()
                   << "] KONIEC polecenia: " << cmd.name << "\n";
     
